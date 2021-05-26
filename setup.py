@@ -32,7 +32,8 @@ setup(
 
     },
 
-    url='xxx',
+    url='https://github.com/zsysuper/pathtree',
+    download_url='https://github.com/zsysuper/pathtree',
     author='husky',
     author_email='xxx@qq.com',
     keywords=['pathtree'],
