@@ -6,28 +6,32 @@ printer = pprint.PrettyPrinter(indent=2)
 
 
 class Leaf(object):
-    def __init__(self, value, order):
-        self.Value = value
+    def __init__(self, value, extra_data, order):
+        self.extra_data = extra_data
+        self.value = value
         self.order = order
 
 
 def Tree(logger=logging):
-    return Node({}, [], 0, logger)
+    return Node({}, [], {}, 0, logger)
 
 
 class Node(object):
-    def __init__(self, edges, leaf, leaf_cnt=0, logger=logging):
+    def __init__(self, edges, leaf, extra_data, leaf_cnt=0, logger=logging):
+        self.extra_data = extra_data
         self.edges = edges
         self.leaf = leaf
         self.leaf_cnt = leaf_cnt
         self.logger = logger
 
-    def Add(self, path, val):
+    def Add(self, path, val, extra_data=None):
+        if extra_data is None:
+            extra_data = {}
         if not path or not path.startswith('/'):
             self.logger.error("Path must begin with /")
             return None, "Path must begin with /"
         self.leaf_cnt += 1
-        return self.add(self.leaf_cnt, self.splitPath(path), val)
+        return self.add(self.leaf_cnt, self.splitPath(path), val, extra_data)
 
     def addLeaf(self, leaf):
         if not self.leaf:
@@ -35,10 +39,10 @@ class Node(object):
         self.leaf.append(leaf)
         return ""
 
-    def add(self, order, elements, val):
+    def add(self, order, elements, val, extra_data):
         if len(elements) == 0:
             self.logger.debug("Add Leaf: %s  %s" % (val, order))
-            leaf = Leaf(val, order)
+            leaf = Leaf(val, extra_data, order)
             return self.addLeaf(leaf)
 
         el, elements = elements[0], elements[1:]
@@ -49,12 +53,12 @@ class Node(object):
         try:
             e = self.edges[el]
         except Exception as _:
-            e = Node({}, [], 0, self.logger)
+            e = Node({}, [], {}, 0, self.logger)
             self.edges[el] = e
             self.logger.debug(
                 "--------------- add order: %d, elements: %s, val: %s" % (
                     order, elements, val))
-        return e.add(order, elements, val)
+        return e.add(order, elements, val, extra_data)
 
     def Find(self, path):
         if len(path) == 0 or path[0] != "/":
@@ -66,7 +70,7 @@ class Node(object):
             return None, None
         leafs = self.find(self.splitPath(path))
         for leaf in leafs:
-            if leaf.Value == value:
+            if leaf.value == value:
                 return leaf
         return None
 
@@ -164,10 +168,17 @@ class Node(object):
                 target_node, father_node = nextNode.delete_path(elements)
         return target_node, father_node
 
+    def SetPathExtraData(self, path, extra_data):
+        node = self.FindPath(path)
+        if node:
+            node.extra_data = extra_data
+            return True
+        return False
+
     @staticmethod
     def matchLeaf(leafs, value):
         for leaf in leafs:
-            if leaf and leaf.Value == value:
+            if leaf and leaf.value == value:
                 return leaf
         return None
 
@@ -234,13 +245,13 @@ def found(n, p, val):
         return False
 
     for leaf in leafs:
-        if leaf.Value == val:
+        if leaf.value == val:
             return True
 
     for leaf in leafs:
-        if leaf.Value != val:
-            print("%s: Value (actual) %s != %s (expected)" % (
-                p, leaf.Value, val))
+        if leaf.value != val:
+            print("%s: value (actual) %s != %s (expected)" % (
+                p, leaf.value, val))
     return False
 
 
@@ -248,7 +259,7 @@ def notfound(n, p, value=None):
     leafs = n.Find(p)
     if leafs:
         for leaf in leafs:
-            if leaf.Value == value:
+            if leaf.value == value:
                 print("Should not have found: %s" % p)
                 return False
     return True
@@ -270,7 +281,7 @@ def Testing():
     print("\n============ TestColon ============")
     n = Tree()
 
-    n.Add("/", "root")
+    n.Add("/", "root", extra_data={"test": "just a test"})
     n.Add("/", "root1")
 
     n.Add("/a", None)
@@ -297,6 +308,8 @@ def Testing():
     n.Add("/f/g/h", "h")
     n.Add("/f/g/h", "hh")
     n.Add("/f/g/h", "hhh")
+
+    n.SetPathExtraData("/a", {"test": "hi"})
 
     found(n, "/", "root")
     found(n, "/", "root1")

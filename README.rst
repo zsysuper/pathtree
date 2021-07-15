@@ -70,7 +70,7 @@ From source code
 
             leaf, _ = t.Find("/a")
             if leaf:
-                print(leaf.Value)
+                print(leaf.value)
 
             exist, v = t.Get("/a")
             if exist:

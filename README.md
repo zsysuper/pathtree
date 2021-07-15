@@ -49,8 +49,9 @@ if __name__ == '__main__':
     t.Add("/", 1)
     t.Add("/a", 2)
     t.Add("/a", 3)
-    t.Add("/a/b", 4)
-    t.Add("/a/b/c", 5)
+    t.Add("/a", 4, extra_data={"test": "just a test"})
+    t.Add("/a/b", 5)
+    t.Add("/a/b/c", 6)
 
     leafs = t.Find("/a")
     if leafs:
@@ -58,7 +59,12 @@ if __name__ == '__main__':
 
     leaf = t.FindLeaf("/a", 2)
     if leaf:
-        print("found leaf: /a -> %s" % leaf.Value)
+        print("found leaf: /a -> %s" % leaf.value)
+    
+    leaf = t.FindLeaf("/a", 4)
+    if leaf:
+        print("found leaf: /a -> %s" % leaf.value)
+        print("            /a -> leaf.extra_data" % leaf.extra_data)
 
     node = t.FindPath("/a/b")
     if node:
@@ -95,4 +101,6 @@ Features
         - Any Node may have an associated Leaf.  Leafs are terminals containing the data associated with the path as traversed from the root to that Node.
 
     - Edges are implemented as a map from the path element name to the next node in the path.
+    
+    - Extra_data is an optional information for every edge or leaf
 
