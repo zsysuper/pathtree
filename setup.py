@@ -19,16 +19,19 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
+
 setup(
-    name = 'pathtree.husky',
-    version = find_version('pathtree', '__init__.py'),
+    name='pathtree.husky',
+    version=find_version('pathtree', '__init__.py'),
     description='pathtree implements a tree for fast path lookup.',
     long_description=read('README.rst'),
+    packages=find_packages(),
 
-    install_requires = [
+    install_requires=[
+
     ],
 
-    extras_require = {
+    extras_require={
 
     },
 
@@ -36,14 +39,14 @@ setup(
     author='husky',
     author_email='215941106@qq.com',
     keywords=['pathtree'],
-    entry_points = {
+    entry_points={
         'console_scripts': [
             'pathtree = pathtree.main:main',
         ],
     },
 
-    license = 'BSD',
-    classifiers = [
+    license='BSD',
+    classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',

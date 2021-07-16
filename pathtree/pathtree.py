@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-import pprint
 import logging
+import pprint
 
 printer = pprint.PrettyPrinter(indent=2)
 

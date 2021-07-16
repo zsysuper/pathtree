@@ -24,7 +24,7 @@ pathtree implements a tree for fast path lookup.
 | bdist\_wheel |
 +--------------+
 | Get the .whl |
-| in：         |
+| in:         |
 +--------------+
 | ./dist/patht |
 | ree-0.0.1-py |
@@ -60,21 +60,46 @@ From source code
 
 .. code:: python
 
-       from pathtree import Tree
+    from pathtree import Tree
+    if __name__ == '__main__':
+        t = Tree()
+        t.Add("/", 1)
+        t.Add("/a", 2)
+        t.Add("/a", 3)
+        t.Add("/a", 4, extra_data={"test": "just a test"})
+        t.Add("/a/b", 5)
+        t.Add("/a/b/c", 6)
 
-       if __name__ == '__main__':
-            t = Tree()
-            t.Add("/", 1)
-            t.Add("/a", 2)
-            t.Add("/a/b", 3)
+        leafs = t.Find("/a")
+        if leafs:
+            print("found all leafs of path /a -> %s" % leafs)
 
-            leaf, _ = t.Find("/a")
-            if leaf:
-                print(leaf.value)
+        leaf = t.FindLeaf("/a", 2)
+        if leaf:
+            print("found leaf: /a -> %s" % leaf.value)
+        
+        leaf = t.FindLeaf("/a", 4)
+        if leaf:
+            print("found leaf: /a -> %s" % leaf.value)
+            print("            /a -> leaf.extra_data" % leaf.extra_data)
 
-            exist, v = t.Get("/a")
-            if exist:
-                print(v)
+        node = t.FindPath("/a/b")
+        if node:
+            print("found path /a/b -> %s" % node)
+
+        t.DeleteLeaf("/a", 2)
+        leaf = t.FindLeaf("/a", 2)
+        if not leaf:
+            print("leaf /a -> 2 has been deleted")
+
+        t.DeletePath("/a/b")
+        node = t.FindPath("/a/b")
+        if not node:
+            print("path /a/b has been deleted")
+
+        node = t.FindPath("/a/b/c")
+        if not node:
+            print("path /a/b/c has been deleted")
 
 Features
 ========
@@ -84,25 +109,7 @@ Features
    filesystem.
 -  All paths must begin with a '/'.
 -  Path elements may not contain a '/'.
--  Path elements beginning with a ':' or '\*' will be interpreted as
-   wildcards.
 -  Trailing slashes are inconsequential.
-
--  Wildcards
-
-   -  Wildcards are named path elements that may match any strings in
-      that location. Two different kinds of wildcards are permitted:
-   -  :var - names beginning with ":" will match any single path
-      element.
-   -  \*var - names beginning with "\*" will match one or more path
-      elements.
-      ``(however, no path elements may come after a star wildcard)``
-
--  Extensions
-
-   -  Single element wildcards in the last path element can optionally
-      end with an extension. This allows for routes like
-      '/users/:id.json', which will not conflict with '/users/:id'.
 
 -  Algorithm
 
@@ -119,3 +126,5 @@ Features
 
    -  Edges are implemented as a map from the path element name to the
       next node in the path.
+
+   -  Extra\_data is an optional information for every edge or leaf
