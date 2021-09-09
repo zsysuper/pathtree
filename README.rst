@@ -24,10 +24,10 @@ pathtree implements a tree for fast path lookup.
 | bdist\_wheel |
 +--------------+
 | Get the .whl |
-| in:         |
+| in:          |
 +--------------+
 | ./dist/patht |
-| ree-0.0.1-py |
+| ree-0.0.9-py |
 | 2.py3-none-a |
 | ny.whl       |
 +--------------+
@@ -39,7 +39,7 @@ From PyPI
 
 ::
 
-    pip install pathtree.0.0.1.wheel
+    pip install pathtree.0.0.9.wheel
 
 From Anaconda (conda forge)
 
@@ -105,18 +105,22 @@ Features
 ========
 
 -  Restrictions
--  Paths must be a '/'-separated list of strings, like a URL or Unix
-   filesystem.
--  All paths must begin with a '/'.
--  Path elements may not contain a '/'.
+-  Tree(separate\_char='/'), split\_char default to '/', you can change
+   it any char you need but '%'.
+-  Use makepath('p1', 'p2', 'p3') => "/p1/p2/p3", the separate char isa
+   set by the parameter: separate\_char.
+-  As default, paths must be a '/'-separated list of strings, like a URL
+   or Unix filesystem.
+-  As default, all paths must begin with a '/'.
+-  As default, path elements may not contain a '/'.
 -  Trailing slashes are inconsequential.
 
 -  Algorithm
 
    -  Paths are mapped to the tree in the following way:
 
-      -  Each '/' is a Node in the tree. The root node is the leading
-         '/'.
+      -  As default, each '/' is a Node in the tree. The root node is
+         the leading '/'.
       -  Each Node has edges to other nodes. The edges are named
          according to the possible path elements at that depth in the
          path.

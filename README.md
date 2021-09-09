@@ -17,7 +17,7 @@ Make the .whl:
 
 Get the .whl in:
 
-    ./dist/pathtree-0.0.7-py2.py3-none-any.whl
+    ./dist/pathtree-0.0.9-py2.py3-none-any.whl
 
 ------------
 Installation
@@ -25,7 +25,7 @@ Installation
 
 From PyPI
 
-    pip install pathtree.0.0.7.wheel
+    pip install pathtree.0.0.9.wheel
 
 From Anaconda (conda forge)
 
