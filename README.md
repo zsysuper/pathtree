@@ -89,14 +89,16 @@ Features
 =========
 
  - Restrictions
-   - Paths must be a '/'-separated list of strings, like a URL or Unix filesystem.
-   - All paths must begin with a '/'.
-   - Path elements may not contain a '/'.
+   - Tree(separate_char='/'), split_char default to '/', you can change it any char you need but '%'.
+   - Use makepath('p1', 'p2', 'p3') => "/p1/p2/p3", the separate char isa set by the parameter: separate_char.
+   - As default, paths must be a '/'-separated list of strings, like a URL or Unix filesystem.
+   - As default, all paths must begin with a '/'.
+   - As default, path elements may not contain a '/'.
    - Trailing slashes are inconsequential.
 
  - Algorithm
     - Paths are mapped to the tree in the following way:
-        - Each '/' is a Node in the tree. The root node is the leading '/'.
+        - As default, each '/' is a Node in the tree. The root node is the leading '/'.
         - Each Node has edges to other nodes. The edges are named according to the possible path elements at that depth in the path.
         - Any Node may have an associated Leaf.  Leafs are terminals containing the data associated with the path as traversed from the root to that Node.
 
